@@ -88,7 +88,8 @@ sbatch --array=1-11 slurm/run_array.sbatch slurm/manifests/e1.txt
 One run is one `python -m asyncmesh_sim.train ...` line in a manifest; the SLURM
 array index selects the line, so manifests are the unit of reproduction. The
 flags that matter here are `--phi-g` and `--phi-s` (the two participation
-fractions, injected independently per replica per round), `--tau` (delay),
+fractions: each round draws a uniform random subset of exactly that many
+replicas, independently for the two phases), `--tau` (delay),
 `--sampler` (`partitioned` or `bernoulli`), and `--part-window` (failures active
 only in a step range, used for the stall-and-recovery experiment).
 

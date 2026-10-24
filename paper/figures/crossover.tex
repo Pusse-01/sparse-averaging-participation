@@ -1,0 +1,30 @@
+% Generated from figures/f3_crossover.csv; do not edit by hand.
+\begin{tikzpicture}
+\begin{groupplot}[
+  group style={group size=2 by 1, horizontal sep=1.4cm},
+  width=0.47\linewidth, height=4.4cm,
+  xlabel={participation fraction}, ylabel={validation loss},
+  xmin=0.45, xmax=1.05, xtick={0.5,0.6,0.7,0.8,0.9,1.0},
+  tick label style={font=\scriptsize}, label style={font=\scriptsize},
+  title style={font=\small},
+  legend style={font=\scriptsize, at={(0.97,0.97)}, anchor=north east,
+                draw=black!30, fill=white, fill opacity=0.9,
+                text opacity=1, row sep=-2pt},
+  legend cell align=left, grid=major, grid style={black!12},
+  cycle list={{blue!60!black, solid},{red!65!black, solid}},
+]
+\nextgroupplot[title={$m=4$}]
+\addplot+[mark=*,mark size=1.3pt,error bars/.cd,y dir=both,y explicit]
+  coordinates {(0.50,4.07805) +- (0,0.00152) (0.60,4.07860) +- (0,0.00244) (0.70,4.07088) +- (0,0.00468) (0.80,4.07091) +- (0,0.00321) (0.90,4.06891) +- (0,0.00558) (1.00,4.06952) +- (0,0.00477)};
+\addlegendentry{send ($\varphi_{\mathrm{g}}$)}
+\addplot+[mark=square*,mark size=1.3pt,error bars/.cd,y dir=both,y explicit]
+  coordinates {(0.50,4.12120) +- (0,0.00026) (0.60,4.11945) +- (0,0.00118) (0.70,4.09241) +- (0,0.00216) (0.80,4.09450) +- (0,0.00020) (0.90,4.06724) +- (0,0.00408) (1.00,4.06952) +- (0,0.00477)};
+\addlegendentry{receive ($\varphi_{\mathrm{s}}$)}
+
+\nextgroupplot[title={$m=16$}]
+\addplot+[mark=*,mark size=1.3pt,error bars/.cd,y dir=both,y explicit]
+  coordinates {(0.50,4.03925) +- (0,0.01235) (0.60,4.03675) +- (0,0.01136) (0.70,4.03656) +- (0,0.01159) (0.80,4.03645) +- (0,0.01214) (0.90,4.03683) +- (0,0.01233) (1.00,4.03701) +- (0,0.01248)};
+\addplot+[mark=square*,mark size=1.3pt,error bars/.cd,y dir=both,y explicit]
+  coordinates {(0.50,4.09624) +- (0,0.01575) (0.60,4.07730) +- (0,0.01270) (0.70,4.07023) +- (0,0.01125) (0.80,4.05541) +- (0,0.01127) (0.90,4.04920) +- (0,0.01272) (1.00,4.03701) +- (0,0.01248)};
+\end{groupplot}
+\end{tikzpicture}

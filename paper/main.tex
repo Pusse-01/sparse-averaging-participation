@@ -1,34 +1,24 @@
 \documentclass{article}
 
-% , , , , , , , , , , , , , 
-% Official NeurIPS style if present, a close-enough fallback otherwise.
-% Download neurips_2026.sty from the NeurIPS 2026 Call for Papers and drop it
-% in this directory; nothing else needs to change.
-% , , , , , , , , , , , , , 
-\IfFileExists{neurips_2026.sty}{%
-  \usepackage[final]{neurips_2026}%  camera-ready: prints author block
-}{%
-  \usepackage[margin=1.25in]{geometry}%
-  \usepackage{times}%
-  \PackageWarningNoLine{main}{neurips_2026.sty not found -- using fallback
-    geometry. Page counts will NOT match the real template.}%
-}
+% Official NeurIPS 2026 style, workshop track, camera-ready.
+\usepackage[dblblindworkshop, final]{neurips_2026}
+\workshoptitle{Collaborative, Open, and DECentralized training of Foundation Models}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{hyperref}
+\usepackage{hyperref}\hypersetup{hidelinks}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{wrapfig}
-\newcommand{\sg}{\sigma_g}
 \usepackage{amsthm}
 \usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{mdframed}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}\usepgfplotslibrary{groupplots}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -36,23 +26,8 @@
 \newtheorem{corollary}[theorem]{Corollary}
 
 % , , , , , , , , , , , , , 
-% DRAFT SCAFFOLDING -- set \draftmodefalse before submitting.
-%
-% \pending{} marks a number not yet measured. It renders in a red box, so no
-% placeholder can survive into a submitted PDF unnoticed. Numbers NOT wrapped
-% in \pending are real; see paper/README.md for provenance.
-% , , , , , , , , , , , , , 
-\newif\ifdraftmode
-\draftmodefalse
 
-\ifdraftmode
-  \newcommand{\pending}[1]{{\color{red}\fbox{\strut #1}}}
-  \newcommand{\todo}[1]{{\color{blue}\small[\textsc{todo}: #1]}}
-\else
-  \newcommand{\pending}[1]{#1}
-  \newcommand{\todo}[1]{}
-\fi
-
+\newcommand{\sg}{\sigma_g}
 \newcommand{\pg}{\varphi_{\mathrm{g}}}
 \newcommand{\ps}{\varphi_{\mathrm{s}}}
 \newcommand{\R}{\mathbb{R}}
@@ -90,9 +65,9 @@ previously stated, and reveals staleness correction as a finite-time transfer of
 error between the two channels. All expressions are exact for arbitrary replica
 weights and validated against a faithful implementation without fitted
 parameters.
-\end{abstract}\vspace{-4pt}
+\end{abstract}\vspace{-8pt}
 
-\vspace{-11pt}\section{One Assumption, Two Events}\label{sec:audit}\vspace{-6pt}
+\vspace{-17pt}\section{One Assumption, Two Events}\label{sec:audit}\vspace{-9pt}
 
 \textbf{Setting.}\quad $m$ replicas hold weights $w_i$ and take local optimizer
 steps. Periodically a random $p$-fraction of coordinates is selected, and for
@@ -156,7 +131,7 @@ this: not the rate for $\ps<1$, not the displacement variance, and not the
 \emph{opposing} motion of the two channels as failures are reallocated
 (Table~\ref{tab:asymmetry}).
 
-\vspace{-12pt}\section{What the Audit Buys}\label{sec:buys}\vspace{-7pt}
+\vspace{-18pt}\section{What the Audit Buys}\label{sec:buys}\vspace{-10pt}
 
 \textbf{The admissible step size is smaller than stated.}\quad Composing the
 contraction with a standard local-SGD recursion gives, for $L$-smooth
@@ -489,7 +464,6 @@ measured, delay $+$ EMA correction & 0.73117 & 0.01298 \\
 \end{tabular}
 \end{table}
 
-
 \begin{table}[h]
 \centering\small
 \caption{Disagreement left standing after one round, sweeping the delay at
@@ -527,9 +501,10 @@ post-write deviation on a selected coordinate is $e_i$ rather than $0$, and
 \bar w' - \bar w \;=\; \big(\bar w^{t-\tau} + \bar d\big) - \bar w^t .
 \end{equation}
 The corrector's \emph{cross-replica spread} lands entirely in the contraction
-channel, and its \emph{mean} entirely in the displacement channel. A corrector
-is thus exactly a device for moving error from the second channel to the
-first. Table~\ref{tab:corrector} measures that exchange: the mean is restored
+channel, and its \emph{mean} entirely in the displacement channel. Any corrector
+of this form reallocates error between the two channels; whether total error
+falls depends on which term dominates the floor of
+Appendix~\ref{app:floors}. Table~\ref{tab:corrector} measures that exchange: the mean is restored
 to within $4\%$ of its delay-free value, and the contraction channel absorbs
 the cost.
 
@@ -542,13 +517,11 @@ badly, and the two should not be tuned independently.
 \section{The crossover, tested and falsified}\label{app:crossover}
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{figures/f3_crossover.png}
-    \caption{Validation loss against participation, sweeping each path separately,
-at $m{=}4$ and $m{=}16$, three seeds; error bars are half the seed range. The
-plotted legend predates the current notation: read \emph{gather}
-($\varphi_{\mathrm{g}}$) as $\pg$ and \emph{scatter} ($\varphi_{\mathrm{s}}$)
-as $\ps$. The prediction below is that the costlier curve swaps between panels.
-It does not.}
+    \input{figures/crossover}
+    \caption{Validation loss against participation, sweeping each path
+separately at $m{=}4$ and $m{=}16$; error bars are half the seed range. The
+prediction below is that the costlier curve swaps between panels. It does not:
+the receive path is costlier at both replica counts.}
     \label{fig:crossover}
 \end{figure}
 
@@ -556,7 +529,8 @@ Theorem~\ref{thm:mean}'s $1/(m{-}1)$ prefactor makes the send channel $O(1/m)$
 while Theorem~\ref{thm:contraction} is $O(1)$, so there should be a replica
 count below which the send path is the costlier one. It should therefore cost
 more at small $m$, where the $1/(m{-}1)$ prefactor of Theorem~\ref{thm:mean} is
-largest. We tested it directly and it is false over the range we can reach.
+largest. We tested it directly and it is false over the range we can reach
+(Figure~\ref{fig:crossover}).
 At $m{=}4$, where the send channel is at its strongest, five times its value
 at $m{=}16$, the receive path is still the costlier one, by $0.0420$ in
 validation loss against a maximum seed spread of $0.0049$. At $m{=}16$ the
@@ -575,14 +549,14 @@ carries no $m$-dependent caveat.
 Holding the \emph{total} failure rate fixed at $25\%$ and varying only which path
 absorbs it isolates the asymmetry, and shows the two channels moving in
 \emph{opposite} directions, the effect no reading of the $\ps{=}1$ corner
-predicts, and the end-to-end verification referred to in Section~\ref{sec:audit}. Validation loss
+predicts, and the end-to-end verification of Table~\ref{tab:asymmetry}. Validation loss
 falls monotonically as the budget moves off the receive path onto the send path,
 tracking the predicted contraction rate $\psi$ at all five splits, while the
 predicted mean displacement rises along the same sweep from $0.0125$ to $0.0222$.
 Per seed the all-receive minus all-send difference is $+0.0232$, $+0.0261$ and
 $+0.0274$; each seed is monotone across all five splits, and three independent
-five-point orderings agreeing by chance has probability
-${\approx}5\times10^{-6}$.
+five-point orderings agreeing by chance, in either direction, has
+probability ${\approx}5\times10^{-6}$.
 
 The measurements are Table~\ref{tab:asymmetry} in the main text.
 
@@ -642,8 +616,8 @@ The separation is complete. All three participation runs, $\ps = 0.6$,
 $\ps = 0.4$, and $\pg = 0.6$, pass the divergence criterion, as does the
 clean control. Both delay-corrector configurations diverge and do not recover.
 Participation failure and staleness failure are therefore not two degrees of
-one problem: one moves a floor, the other breaks a contraction, and only the
-first is survivable.
+one problem: one moves a floor, the other breaks a contraction, and in these
+runs only the first recovered.
 
 \section{Related work}\label{app:related}
 
@@ -682,7 +656,8 @@ Sparse averaging uses the partitioned index selector of~\citet{beton2025sparta},
 which splits each parameter into $\lceil 1/p \rceil$ disjoint parts and cycles
 them, so the realised fraction is $1/\lceil 1/p\rceil$ rather than $p$; every
 $p$ we quote is a realised fraction. Failures are injected per replica per
-round, independently on the two phases, at rates $\pg$ and $\ps$.
+round, independently on the two phases: the contributing and adopting sets
+are drawn as uniform subsets of exactly $\pg m$ and $\ps m$ replicas.
 
 \paragraph{Relation to the sampling assumptions of Appendix~\ref{app:theory}.}
 Two differences between the analysis and the implementation are deliberate.
@@ -692,18 +667,20 @@ disjoint parts. Theorems~\ref{thm:contraction} and~\ref{thm:mean} are stated
 \emph{per averaged coordinate} and the operator acts on each selected coordinate
 separately and identically, so the law of the mask enters only through the
 realised fraction of coordinates averaged, which is the $p$ we quote; no step of
-either proof uses independence across coordinates. Second,
-Appendix~\ref{app:theory} fixes $|G| = \pg m$ and $|R| = \ps m$, whereas
-failures are injected per replica, so the realised cardinalities are Binomial
-rather than fixed and $1/\pg$ is convex. We therefore evaluate every prediction
-at the cardinalities a round actually realised --- logged per round, and
-reported as the realised $\pg$ and $\ps$ --- rather than at their nominal means,
-which is what makes the comparison in Appendix~\ref{app:exact} a test of the
-identity rather than of a Jensen gap. Rounds in which no replica contributes to
-a coordinate are a no-op at that coordinate: no average exists, and the
-implementation masks the coordinate out so that no replica adopts anything.
-The $\pg \to 0$ divergence of Theorem~\ref{thm:mean} is therefore never
-evaluated at $|G| = 0$; it describes rounds with few contributors, not none.
+either proof uses independence across coordinates. Second, the cardinalities match. Appendix~\ref{app:theory} draws $G$ and $R$ as
+uniform subsets of exactly $\pg m$ and $\ps m$ replicas, and the implementation
+does the same: each round selects a uniform random subset of fixed size, not an
+independent Bernoulli draw per replica. The realised cardinalities are therefore
+not Binomial, and no Jensen gap in $1/\pg$ separates the prediction from the
+measurement --- which is why the predicted columns of
+Table~\ref{tab:operator} are the closed form evaluated at the nominal
+$(\pg,\ps)$. Every run reported in this paper uses that mode; a per-coordinate
+Bernoulli mode exists in the code, for modelling partial slice delivery, and is
+used for no result here. At least one replica always contributes, so the
+$\pg \to 0$ divergence of Theorem~\ref{thm:mean} describes rounds with few
+contributors, never an empty gather set; where a coordinate's gather set would
+be empty the implementation masks that coordinate out and no replica adopts
+anything.
 
 Grids, seeds and the exact argument string for every run are generated
 programmatically and recorded as run manifests, and the run-level JSON summaries

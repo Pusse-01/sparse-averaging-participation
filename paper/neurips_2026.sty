@@ -1,4 +1,6 @@
-\providecommand{\@trackname}{}
+% [local patch] line removed: \providecommand{\@trackname}{} collided with the
+% \newcommand{\@trackname} inside each track option, which errors under
+% \ProcessOptions. Every track option defines \@trackname itself.
 % partial rewrite of the LaTeX2e package for submissions to the
 % Conference on Neural Information Processing Systems (NeurIPS):
 %
