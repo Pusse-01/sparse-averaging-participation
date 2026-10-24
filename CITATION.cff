@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite the paper."
+title: "Which Half of Participation Does the Sparse-Averaging Contraction Need?"
+authors:
+  - family-names: Pussadeniya
+    given-names: Nirodya
+    affiliation: "School of Information Technology, Deakin University, Australia"
+    email: s226057035@deakin.edu.au
+license: MIT
+repository-code: "https://github.com/Pusse-01/sparse-averaging-participation"
+preferred-citation:
+  type: conference-paper
+  title: "Which Half of Participation Does the Sparse-Averaging Contraction Need?"
+  authors:
+    - family-names: Pussadeniya
+      given-names: Nirodya
+  collection-title: "NeurIPS 2026 Workshop on Collaborative, Open and Decentralized Training of Foundation Models (CODEC-FM)"
+  year: 2026
+  url: "https://openreview.net/forum?id=MTzRGBVAfc"

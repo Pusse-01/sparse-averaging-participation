@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Half of Participation?</title>
+<meta name="description" content="Send and receive failures in sparse averaging are not interchangeable: only the receive half sets the contraction.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>⇄</text></svg>">
+<style>
+  :root{
+    --bg:#fbfbfa; --fg:#1a1a18; --muted:#6a6a63; --rule:#e0e0da;
+    --accent:#1f5f8b; --card:#ffffff; --code-bg:#f3f3ef;
+    --recv:#b3441d; --send:#1f5f8b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14150f; --fg:#eceadf; --muted:#9b9a8e; --rule:#2e2f27;
+      --accent:#7fb2d4; --card:#1c1d16; --code-bg:#20211a;
+      --recv:#e08a63; --send:#7fb2d4;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14150f; --fg:#eceadf; --muted:#9b9a8e; --rule:#2e2f27;
+    --accent:#7fb2d4; --card:#1c1d16; --code-bg:#20211a;
+    --recv:#e08a63; --send:#7fb2d4;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:17px/1.65 Georgia,'Iowan Old Style',serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:46rem; margin:0 auto; padding:4rem 16px 5rem}
+  header{border-bottom:1px solid var(--rule); padding-bottom:1.6rem; margin-bottom:2rem}
+  .venue{
+    font:600 12px/1 ui-sans-serif,system-ui,sans-serif; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 .9rem
+  }
+  h1{font-size:1.95rem; line-height:1.22; margin:0 0 .9rem; font-weight:600}
+  .author{margin:0; color:var(--muted); font-size:1rem}
+  .author a{color:inherit}
+  nav{margin-top:1.4rem; display:flex; flex-wrap:wrap; gap:.5rem}
+  nav a{
+    font:600 14px/1 ui-sans-serif,system-ui,sans-serif; text-decoration:none;
+    color:var(--fg); border:1px solid var(--rule); background:var(--card);
+    padding:.55rem .85rem; border-radius:7px;
+  }
+  nav a:hover{border-color:var(--accent); color:var(--accent)}
+  h2{font-size:1.2rem; margin:2.6rem 0 .8rem; font-weight:600; letter-spacing:-.01em}
+  p{margin:0 0 1rem}
+  .lede{font-size:1.1rem}
+  .muted{color:var(--muted)}
+  .card{
+    background:var(--card); border:1px solid var(--rule); border-radius:10px;
+    padding:1.1rem 1.25rem; margin:1.4rem 0;
+  }
+  table{border-collapse:collapse; width:100%; font-size:.94rem; margin:.4rem 0 .2rem}
+  th,td{text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--rule); vertical-align:top}
+  th{font:600 13px/1.3 ui-sans-serif,system-ui,sans-serif; letter-spacing:.02em; color:var(--muted)}
+  td.recv{color:var(--recv); font-weight:600}
+  td.send{color:var(--send); font-weight:600}
+  pre{
+    background:var(--code-bg); border:1px solid var(--rule); border-radius:8px;
+    padding:.9rem 1rem; overflow-x:auto; margin:.9rem 0;
+    font:13.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  code{font:13.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--code-bg); padding:.1rem .3rem; border-radius:4px}
+  pre code{background:none; padding:0}
+  figure{margin:1.4rem 0}
+  figure img{width:100%; border:1px solid var(--rule); border-radius:8px; background:#fff}
+  figcaption{font-size:.88rem; color:var(--muted); margin-top:.55rem}
+  a{color:var(--accent)}
+  footer{margin-top:3.5rem; padding-top:1.4rem; border-top:1px solid var(--rule); font-size:.9rem; color:var(--muted)}
+  @media (max-width:520px){ .wrap{padding-top:2.5rem} h1{font-size:1.6rem} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="venue">CODEC-FM @ NeurIPS 2026 · Tiny Paper</p>
+  <h1>Which Half of Participation Does the Sparse-Averaging Contraction Need?</h1>
+  <p class="author">Nirodya Pussadeniya · School of Information Technology, Deakin University, Australia</p>
+  <nav>
+    <a href="https://github.com/Pusse-01/sparse-averaging-participation/raw/main/paper/main.pdf">Paper (PDF)</a>
+    <a href="https://github.com/Pusse-01/sparse-averaging-participation">Code</a>
+    <a href="https://openreview.net/forum?id=MTzRGBVAfc">OpenReview</a>
+  </nav>
+</header>
+
+<p class="lede">Decentralized training keeps replicas in sync by periodically averaging a
+random subset of their weights. Every guarantee for this assumes each replica both
+<strong>contributes</strong> to the average and <strong>receives</strong> the result.
+In a real system those are two network events that fail independently — and are
+already logged as two separate counters. We asked which half the guarantee actually
+needs.</p>
+
+<h2>The answer: only the receive half</h2>
+
+<p>We compute one averaging round exactly, for an arbitrary weight configuration,
+with the two fractions separated: <code>φ<sub>g</sub></code> for send (contribute)
+and <code>φ<sub>s</sub></code> for receive (adopt). The two are not interchangeable.</p>
+
+<table>
+  <tr><th></th><th>Contraction of disagreement</th><th>Shift in the agreed value</th></tr>
+  <tr>
+    <td><strong>Receive</strong> failure</td>
+    <td class="recv">reduces it linearly</td>
+    <td class="muted">—</td>
+  </tr>
+  <tr>
+    <td><strong>Send</strong> failure</td>
+    <td class="muted">absent at leading order</td>
+    <td class="send">displaces the mean, diverging as φ<sub>g</sub> → 0</td>
+  </tr>
+</table>
+
+<p>So replicas still agree <em>exactly</em> when every replica receives, however few
+contribute. Send failures instead act on a second channel — the value replicas agree
+on — which standard mixing-matrix analysis <em>cannot represent</em>: double
+stochasticity is precisely the statement that a round preserves the mean, so that
+channel is zero by assumption, not merely unstudied.</p>
+
+<div class="card">
+  <p style="margin:0"><strong>What it costs you.</strong> The effective averaging rate
+  is <code>p·φ<sub>s</sub></code>, not <code>p</code>, so the admissible step size is
+  narrower than published. And a staleness corrector turns out to <em>transfer</em>
+  error between the two channels rather than remove it — it restores the mean and
+  increases the disagreement left standing.</p>
+</div>
+
+<h2>The rule</h2>
+<p>Spend reliability budget on making replicas <strong>receive</strong> rather than
+send; carry <code>p·φ<sub>s</sub></code> in guarantees rather than <code>p</code>; and
+report a staleness corrector together with the disagreement it buys back.</p>
+
+<h2>Check it yourself, in seconds</h2>
+<p>The central claim is a closed-form identity — no GPU, no dataset:</p>
+<pre><code>git clone https://github.com/Pusse-01/sparse-averaging-participation
+cd sparse-averaging-participation
+pip install numpy
+python -m theory.participation</code></pre>
+<p>That prints the closed form, checks it against Monte Carlo, and reproduces Table 1
+of the paper: as a fixed 25% failure budget moves from the send path to the receive
+path, the effective receive fraction <code>ψ</code> falls from 1.000 to 0.763 while the
+predicted mean displacement moves the other way, 0.0125 → 0.0222. The two channels
+move in opposite directions.</p>
+
+<h2>A prediction we falsified</h2>
+<figure>
+  <img src="f3_crossover.png" alt="Validation loss against participation, sweeping the send and receive paths separately at m=4 and m=16. The receive path is costlier in both panels; the predicted crossover does not occur.">
+  <figcaption>The send channel carries a <code>1/(m−1)</code> prefactor, so it should
+  dominate at small <code>m</code>. We pre-registered that crossover and tested it: at
+  <code>m=4</code>, where the send channel is five times its value at <code>m=16</code>,
+  the receive path is <em>still</em> the costlier one. Reported as a negative result —
+  it means the design rule carries no <code>m</code>-dependent caveat.</figcaption>
+</figure>
+
+<h2>Scope</h2>
+<p class="muted">The identity is exact for arbitrary replica weights and arbitrary
+<code>m</code>, with no distributional assumption and no replica homogeneity. It is a
+one-round statement, not a convergence guarantee under heterogeneous objectives. The
+empirical work is at 45M parameters with <code>m ≤ 16</code> and replicas simulated
+sequentially; read the deployment recommendation at that scale.</p>
+
+<footer>
+  <p>Per-run JSON summaries for every table are in
+  <a href="https://github.com/Pusse-01/sparse-averaging-participation/tree/main/results"><code>results/</code></a>,
+  and the analysis reads them directly with <code>--from-json</code> — no Weights &amp; Biases needed.</p>
+  <p>MIT licensed · <a href="https://github.com/Pusse-01/sparse-averaging-participation">github.com/Pusse-01/sparse-averaging-participation</a></p>
+</footer>
+
+</div>
+</body>
+</html>

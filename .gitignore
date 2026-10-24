@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+wandb/
+data/*.bin
+
+# LaTeX build artefacts (paper/main.pdf is committed deliberately)
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.xdv
+*.synctex.gz
